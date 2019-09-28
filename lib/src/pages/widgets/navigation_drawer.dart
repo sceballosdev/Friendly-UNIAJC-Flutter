@@ -1,51 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
-import 'package:workshop_gdg_cali/src/pages/maps/maps_page.dart';
+import 'package:workshop_gdg_cali/src/pages/widgets/header_drawer.dart';
 
-class NavigationDrawer extends StatelessWidget {
+class NavigationDrawer extends StatefulWidget {
+  @override
+  _NavigationDrawerState createState() => _NavigationDrawerState();
+}
+
+class _NavigationDrawerState extends State<NavigationDrawer> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Drawer(
       child: ListView(
         children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountEmail: Text("sceballosdev@gmail.com"),
-            accountName: Text("Steven Ceballos"),
-            currentAccountPicture: GestureDetector(
-              child: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/profile.jpg'),
-              ),
-              onTap: () => print("Evento por si se clickea la foto"),
-            ),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/header_drawer.jpg'),
-                    fit: BoxFit.fill)
-            ),
-          ),
+          HeaderDrawer(),
           ListTile(
               title: Text("Inicio"),
-              trailing: Icon(Icons.arrow_upward),
+              leading: Icon(Icons.home),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushNamed('/home');
               }),
           ListTile(
               title: Text("Mapa"),
-              trailing: Icon(Icons.arrow_right),
+              leading: Icon(Icons.map),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushNamed('/maps');
               }),
+          ListTile(
+              title: Text("Usuarios"),
+              leading: Icon(Icons.supervised_user_circle),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/users');
+              }),
           Divider(),
           ListTile(
-            title: Text("Cancel"),
-            trailing: Icon(Icons.cancel),
+            title: Text("Cerrar Sesión"),
+            leading: Icon(Icons.exit_to_app),
             onTap: () => Navigator.pop(context),
           ),
         ],
       ),
+    );
+  }
+
+  ListTile getNavItem(
+      IconData itemIcon, String itemName, String itemRouteName) {
+    return ListTile(
+      leading: Icon(itemIcon),
+      title: Text(itemName),
+      onTap: () {
+        setState(() {
+          // pop closes the drawer
+          Navigator.of(context).pop();
+          // navigate to the route
+          Navigator.of(context).pushNamed(itemRouteName);
+        });
+      },
     );
   }
 }

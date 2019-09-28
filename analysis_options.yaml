@@ -2,7 +2,10 @@ include: package:pedantic/analysis_options.yaml
 
 analyzer:
   exclude:
-    - lib/src/locations.g.dart
+    - lib/src/location_entity.g.dart
+    - lib/src/pages/home/entities/pollution_entity.g.dart
+    - lib/src/pages/home/entities/sale_entity.g.dart
+    - lib/src/pages/home/entities/task_entity.g.dart
 
 linter:
   rules:

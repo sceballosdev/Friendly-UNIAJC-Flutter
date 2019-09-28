@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:workshop_gdg_cali/src/pages/utils/bubble_indication_painter.dart';
 
 class MenuBar extends StatelessWidget {
-
   const MenuBar({
     Key key,
     @required this.pageController,

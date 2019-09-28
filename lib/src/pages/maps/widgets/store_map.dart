@@ -27,17 +27,17 @@ class StoreMap extends StatelessWidget {
       ),
       markers: documents
           .map((document) => Marker(
-        markerId: MarkerId(document['placeId']),
-        icon: BitmapDescriptor.defaultMarkerWithHue(_pinkHue),
-        position: LatLng(
-          document['location'].latitude,
-          document['location'].longitude,
-        ),
-        infoWindow: InfoWindow(
-          title: document['name'],
-          snippet: document['address'],
-        ),
-      ))
+                markerId: MarkerId(document['placeId']),
+                icon: BitmapDescriptor.defaultMarkerWithHue(_pinkHue),
+                position: LatLng(
+                  document['location'].latitude,
+                  document['location'].longitude,
+                ),
+                infoWindow: InfoWindow(
+                  title: document['name'],
+                  snippet: document['address'],
+                ),
+              ))
           .toSet(),
       onMapCreated: (mapController) {
         this.mapController.complete(mapController);

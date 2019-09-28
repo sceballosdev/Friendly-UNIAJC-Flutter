@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
+import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
 
@@ -156,7 +159,7 @@ class _SignInFormState extends State<SignInForm> {
                             fontFamily: "WorkSansBold"),
                       ),
                     ),
-                    onPressed: () => Navigator.of(context).pushNamed('/home')),
+                    onPressed: () => login()),
               ),
             ],
           ),
@@ -252,7 +255,7 @@ class _SignInFormState extends State<SignInForm> {
                       .signInGoogle()
                       .then(
                           (user) => print("El usuario es ${user.displayName}"))
-                      .catchError((err) => print("error " + err)),
+                      .catchError((err) => print("error " + err.toString())),
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
@@ -277,5 +280,21 @@ class _SignInFormState extends State<SignInForm> {
     setState(() {
       _obscureTextLogin = !_obscureTextLogin;
     });
+  }
+
+  void login() async {
+    var email = loginEmailController.text.toString();
+    var password = loginPasswordController.text.toString();
+    UserEntity loginData = UserEntity(email: email, password: password);
+
+    var currentUser = await widget.userBloc.signInWithCredentials(loginData);
+    if (currentUser.email == "noFound") {
+      print('Error ' + currentUser.toJson().toString());
+    } else {
+      // Save user to shared preferences
+      print('se guarda currentUser en shared preferences ' + currentUser.toJson().toString());
+
+      Navigator.pushNamed(context, HomePage.routeName);
+    }
   }
 }

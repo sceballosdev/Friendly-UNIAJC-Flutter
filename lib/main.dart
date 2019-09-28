@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
             title: 'Friendly UNIAJC',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(primarySwatch: Colors.indigo),
-            initialRoute: LoginPage.routeName,
+            home: LoginPage(),
             routes: getApplicationRoutes()),
         bloc: UserBloc());
   }
