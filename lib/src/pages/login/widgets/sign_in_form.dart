@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:workshop_gdg_cali/src/entities/login_entity.dart';
 import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
-import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
 
@@ -292,16 +291,4 @@ class _SignInFormState extends State<SignInForm> {
           photoURL: user.photoUrl));
     }).catchError((err) => print("error " + err.toString()));
   }
-
-/*void loginFacebook() {
-    widget.userBloc.signInFacebook().then((user) {
-      widget.userBloc.updateUserData(UserEntity(
-          uid: user.uid,
-          username: user.displayName,
-          email: user.email,
-          photoURL: user.photoUrl));
-
-      Navigator.pushNamed(context, HomePage.routeName);
-    }).catchError((err) => print("error " + err.toString()));
-  }*/
 }

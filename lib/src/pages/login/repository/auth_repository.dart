@@ -11,10 +11,13 @@ class AuthRepository {
 
   // Firebase
   Future<FirebaseUser> signInGoogle() => _firebaseAuthAPI.signInGoogle();
-  Future<FirebaseUser> signInAnonymously() => _firebaseAuthAPI.signInAnonymously();
-  //Future<FirebaseUser> signInFacebook() => _firebaseAuthAPI.signInFacebook();
+
+  Future<FirebaseUser> signInAnonymously() =>
+      _firebaseAuthAPI.signInAnonymously();
+
   signOut() => _firebaseAuthAPI.signOut();
 
   // Ktor
-  Future<UserEntity> signInWithCredentials(LoginEntity user) => _ktorAuthAPI.signInWithCredentials(user);
+  Future<UserEntity> signInWithCredentials(LoginEntity user) =>
+      _ktorAuthAPI.signInWithCredentials(user);
 }
