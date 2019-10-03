@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/login/widgets/menu_bar.dart';
 import 'package:workshop_gdg_cali/src/pages/login/widgets/sign_in_form.dart';
@@ -26,12 +27,29 @@ class _LoginPageState extends State<LoginPage>
 
   Color left = Colors.black;
   Color right = Colors.white;
+  final String assetName = 'assets/images/logo.svg';
 
   @override
   Widget build(BuildContext context) {
-    final String assetName = 'assets/images/logo.svg';
     userBloc = BlocProvider.of(context);
+    return _handleCurrentSession();
+  }
 
+  Widget _handleCurrentSession(){
+    return StreamBuilder(
+      stream: userBloc.authStatus,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        //snapshot- data - Object User
+        if(!snapshot.hasData || snapshot.hasError) {
+          return loginPageUI();
+        } else {
+          return HomePage();
+        }
+      },
+    );
+  }
+
+  Widget loginPageUI() {
     return Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(

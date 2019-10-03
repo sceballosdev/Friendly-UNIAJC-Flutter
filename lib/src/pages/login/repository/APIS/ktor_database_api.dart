@@ -5,16 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
 import 'package:workshop_gdg_cali/src/pages/utils/headers_api.dart';
 
-const restBackendURL =
-    'http://ec2-18-225-8-60.us-east-2.compute.amazonaws.com:8080';
+const restBackendURL = 'http://130.211.215.145:8080/ktorbackend-0.0.1';
 
-class KtorAuthAPI {
-  Future<UserEntity> signInWithCredentials(UserEntity user) async {
-    print('usuario que llega ' + user.toJson().toString());
+class KtorDatabaseAPI {
+  Future<UserEntity> registerUser(UserEntity user) async {
+    var url = restBackendURL + '/register';
 
-    var url = restBackendURL + '/login';
-
-    final response = await http.post(url, body: json.encode(user), headers: HeadersAPI.headers(false));
+    final response = await http.post(url,
+        body: json.encode(user), headers: HeadersAPI.headers(false));
 
     if (response.statusCode == 200) {
       return UserEntity.fromJson(json.decode(response.body));
@@ -22,7 +20,7 @@ class KtorAuthAPI {
       throw HttpException(
           'Unexpected status code ${response.statusCode}:'
           ' ${response.reasonPhrase}',
-          uri: Uri.parse(restBackendURL + '/login'));
+          uri: Uri.parse(restBackendURL + '/register'));
     }
   }
 }

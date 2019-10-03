@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workshop_gdg_cali/src/entities/login_entity.dart';
 import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
 import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
@@ -228,34 +228,9 @@ class _SignInFormState extends State<SignInForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: 10.0, right: 40.0),
-                child: GestureDetector(
-                  onTap: () => widget.userBloc
-                      .signInGoogle()
-                      .then(
-                          (user) => print("El usuario es ${user.displayName}"))
-                      .catchError((err) => print("error " + err)),
-                  child: Container(
-                    padding: const EdgeInsets.all(15.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Icon(
-                      FontAwesomeIcons.facebookF,
-                      color: Color(0xFF0084ff),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
                 padding: EdgeInsets.only(top: 10.0),
                 child: GestureDetector(
-                  onTap: () => widget.userBloc
-                      .signInGoogle()
-                      .then(
-                          (user) => print("El usuario es ${user.displayName}"))
-                      .catchError((err) => print("error " + err.toString())),
+                  onTap: () => loginGoogle(),
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
@@ -285,16 +260,48 @@ class _SignInFormState extends State<SignInForm> {
   void login() async {
     var email = loginEmailController.text.toString();
     var password = loginPasswordController.text.toString();
-    UserEntity loginData = UserEntity(email: email, password: password);
 
-    var currentUser = await widget.userBloc.signInWithCredentials(loginData);
-    if (currentUser.email == "noFound") {
-      print('Error ' + currentUser.toJson().toString());
+    LoginEntity loginData = LoginEntity(email: email, password: password);
+    var currentUser;
+
+    try {
+      currentUser = await widget.userBloc.signInWithCredentials(loginData);
+      print('currentUser ' + currentUser.toJson().toString());
+    } catch (e) {
+      print('error caught: $e');
+    }
+
+    if (currentUser == null) {
+      // alerta con mensaje de error
     } else {
       // Save user to shared preferences
-      print('se guarda currentUser en shared preferences ' + currentUser.toJson().toString());
+      print('se guarda currentUser en shared preferences ' +
+          currentUser.toJson().toString());
 
-      Navigator.pushNamed(context, HomePage.routeName);
+      await widget.userBloc.signInAnonymously();
     }
   }
+
+  void loginGoogle() {
+    widget.userBloc.signOut();
+    widget.userBloc.signInGoogle().then((user) {
+      widget.userBloc.updateUserData(UserEntity(
+          uid: user.uid,
+          username: user.displayName,
+          email: user.email,
+          photoURL: user.photoUrl));
+    }).catchError((err) => print("error " + err.toString()));
+  }
+
+/*void loginFacebook() {
+    widget.userBloc.signInFacebook().then((user) {
+      widget.userBloc.updateUserData(UserEntity(
+          uid: user.uid,
+          username: user.displayName,
+          email: user.email,
+          photoURL: user.photoUrl));
+
+      Navigator.pushNamed(context, HomePage.routeName);
+    }).catchError((err) => print("error " + err.toString()));
+  }*/
 }

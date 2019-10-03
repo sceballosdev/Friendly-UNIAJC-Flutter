@@ -5,12 +5,15 @@ part 'user_entity.g.dart';
 @JsonSerializable()
 class UserEntity {
 
-  UserEntity({this.id, this.username, this.email, this.password, this.jwt, this.fcmToken});
+  UserEntity({this.id, this.uid, this.full_name, this.username, this.email, this.password, this.photoURL, this.jwt, this.fcmToken});
 
   int id;
+  String uid;
+  String full_name;
   String username;
   String email;
   String password;
+  String photoURL;
   String jwt;
   String fcmToken;
 

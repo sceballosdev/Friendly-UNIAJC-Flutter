@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
+import 'package:workshop_gdg_cali/src/pages/maps/maps_page.dart';
 import 'package:workshop_gdg_cali/src/pages/widgets/header_drawer.dart';
 
 class NavigationDrawer extends StatefulWidget {
@@ -7,8 +10,11 @@ class NavigationDrawer extends StatefulWidget {
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
+  UserBloc userBloc;
+
   @override
   Widget build(BuildContext context) {
+    userBloc = BlocProvider.of(context);
     // TODO: implement build
     return Drawer(
       child: ListView(
@@ -19,14 +25,13 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               leading: Icon(Icons.home),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/home');
               }),
           ListTile(
               title: Text("Mapa"),
               leading: Icon(Icons.map),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/maps');
+                Navigator.of(context).pushNamed(MapsPage.routeName);
               }),
           ListTile(
               title: Text("Usuarios"),
@@ -39,11 +44,16 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
           ListTile(
             title: Text("Cerrar Sesión"),
             leading: Icon(Icons.exit_to_app),
-            onTap: () => Navigator.pop(context),
+            onTap: () => logout(),
           ),
         ],
       ),
     );
+  }
+
+  void logout() {
+    userBloc.signOut();
+    Navigator.pop(context);
   }
 
   ListTile getNavItem(

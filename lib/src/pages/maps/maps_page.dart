@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/maps/widgets/store_carousel.dart';
 import 'package:workshop_gdg_cali/src/pages/maps/widgets/store_map.dart';
-import 'package:workshop_gdg_cali/src/pages/widgets/navigation_drawer.dart';
 
 class MapsPage extends StatefulWidget {
   static const String routeName = "/maps";
@@ -21,6 +22,7 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   Stream<QuerySnapshot> _userLocations;
   final Completer<GoogleMapController> _mapController = Completer();
+  UserBloc userBloc;
 
   @override
   void initState() {
@@ -33,11 +35,28 @@ class _MapsPageState extends State<MapsPage> {
 
   @override
   Widget build(BuildContext context) {
+    userBloc = BlocProvider.of<UserBloc>(context);
+
+    /*return StreamBuilder(
+      stream: userBloc.authStatus,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        //snapshot- data - Object User
+        if (!snapshot.hasData || snapshot.hasError) {
+          return LoginPage();
+        } else {
+          return mapPageUI();
+        }
+      },
+    );*/
+
+    return mapPageUI();
+  }
+
+  Widget mapPageUI() {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      drawer: NavigationDrawer(),
       body: StreamBuilder<QuerySnapshot>(
         stream: _userLocations,
         builder: (context, snapshot) {

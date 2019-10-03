@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
+import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
 
@@ -225,16 +227,48 @@ class _SignUpFormState extends State<SignUpForm> {
                             fontFamily: "WorkSansBold"),
                       ),
                     ),
-                    onPressed: () => Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text('Login Pressed'),
-                          duration: Duration(seconds: 3),
-                        ))),
+                    onPressed: () => register()),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  void register() async {
+    var full_name = signupNameController.text.toString();
+    var email = signupEmailController.text.toString();
+    var password = signupPasswordController.text.toString();
+    var usernameArray = email.split("@");
+
+    UserEntity registerData = UserEntity(
+        uid: "",
+        full_name: full_name,
+        username: usernameArray[0],
+        email: email,
+        password: password,
+        photoURL: "",
+        jwt: "",
+        fcmToken: "");
+    var currentUser;
+
+    try {
+      currentUser = await widget.userBloc.registerUser(registerData);
+      print('currentUser ' + currentUser.toJson().toString());
+    } catch (e) {
+      print('error caught: $e');
+    }
+
+    if (currentUser == null) {
+      // alerta con mensaje de error
+    } else {
+      // Save user to shared preferences
+      print('se guarda currentUser en shared preferences ' +
+          currentUser.toJson().toString());
+
+      Navigator.pushNamed(context, HomePage.routeName);
+    }
   }
 
   @override
