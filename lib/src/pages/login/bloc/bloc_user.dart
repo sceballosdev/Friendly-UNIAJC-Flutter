@@ -36,6 +36,10 @@ class UserBloc implements Bloc {
   void updateUserData(UserEntity user) =>
       _database_repository.updateUserDataFirestore(user);
 
+  //3. Update user token firestore
+  void updateUserToken(String token, String uid) =>
+      _database_repository.updateUserToken(token, uid);
+
   //4. Registar al usuario en el back ktor
   Future<UserEntity> registerUser(UserEntity user) =>
       _database_repository.registerUser(user);

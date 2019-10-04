@@ -7,5 +7,6 @@ class DatabaseRepository {
   final _ktorDatabaseAPI = KtorDatabaseAPI();
 
   void updateUserDataFirestore(UserEntity user) => _firebaseDatabaseAPI.updateUserData(user);
+  void updateUserToken(String token, String uid) => _firebaseDatabaseAPI.updateUserToken(token, uid);
   Future<UserEntity> registerUser(UserEntity user) => _ktorDatabaseAPI.registerUser(user);
 }

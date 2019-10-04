@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:workshop_gdg_cali/src/entities/login_entity.dart';
-import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
 
@@ -277,18 +278,21 @@ class _SignInFormState extends State<SignInForm> {
       print('se guarda currentUser en shared preferences ' +
           currentUser.toJson().toString());
 
-      await widget.userBloc.signInAnonymously();
+      await widget.userBloc.signInAnonymously().then((FirebaseUser user) {
+        print('datos del usuario anonimo ' + user.toString());
+        FirebaseMessaging().getToken().then((token) {
+          widget.userBloc.updateUserToken(token, user.uid);
+        });
+      });
     }
   }
 
   void loginGoogle() {
     widget.userBloc.signOut();
     widget.userBloc.signInGoogle().then((user) {
-      widget.userBloc.updateUserData(UserEntity(
-          uid: user.uid,
-          username: user.displayName,
-          email: user.email,
-          photoURL: user.photoUrl));
+      FirebaseMessaging().getToken().then((token) {
+        widget.userBloc.updateUserToken(token, user.uid);
+      });
     }).catchError((err) => print("error " + err.toString()));
   }
 }
