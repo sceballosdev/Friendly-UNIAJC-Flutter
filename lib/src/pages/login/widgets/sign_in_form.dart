@@ -3,8 +3,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:workshop_gdg_cali/src/entities/login_entity.dart';
+import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({
@@ -32,6 +35,7 @@ class _SignInFormState extends State<SignInForm> {
   TextEditingController loginPasswordController = TextEditingController();
 
   bool _obscureTextLogin = true;
+  final _localStorageService = locator<LocalStorageService>();
 
   @override
   Widget build(BuildContext context) {
@@ -273,6 +277,7 @@ class _SignInFormState extends State<SignInForm> {
 
     if (currentUser == null) {
       // alerta con mensaje de error
+      print('mostrar alerta de error alv');
     } else {
       // Save user to shared preferences
       print('se guarda currentUser en shared preferences ' +
@@ -280,8 +285,14 @@ class _SignInFormState extends State<SignInForm> {
 
       await widget.userBloc.signInAnonymously().then((FirebaseUser user) {
         print('datos del usuario anonimo ' + user.toString());
+
         FirebaseMessaging().getToken().then((token) {
           widget.userBloc.updateUserToken(token, user.uid);
+
+          _localStorageService.jwtToken = currentUser.jwt;
+          _localStorageService.email = currentUser.email;
+          _localStorageService.fullname = currentUser.full_name;
+          _localStorageService.photoURL = currentUser.photoURL;
         });
       });
     }
@@ -292,7 +303,34 @@ class _SignInFormState extends State<SignInForm> {
     widget.userBloc.signInGoogle().then((user) {
       FirebaseMessaging().getToken().then((token) {
         widget.userBloc.updateUserToken(token, user.uid);
+
+        saveUserToBackend(
+            user.uid, user.displayName, user.email, user.photoUrl, token);
       });
     }).catchError((err) => print("error " + err.toString()));
+  }
+
+  void saveUserToBackend(String uid, String full_name, String email,
+      String photoURL, String fcmToken) async {
+    var usernameArray = email.split("@");
+    print(
+        '<===================================================  4 ==================================================>');
+
+    UserEntity currentUser = UserEntity(
+        uid: uid,
+        full_name: full_name,
+        username: usernameArray[0],
+        email: email,
+        password: '',
+        photoURL: photoURL,
+        jwt: '',
+        fcmToken: '');
+
+    currentUser = await widget.userBloc.registerUser(currentUser);
+
+    _localStorageService.jwtToken = currentUser.jwt;
+    _localStorageService.email = currentUser.email;
+    _localStorageService.fullname = currentUser.full_name;
+    _localStorageService.photoURL = currentUser.photoURL;
   }
 }

@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:workshop_gdg_cali/src/entities/user_entity.dart';
 import 'package:workshop_gdg_cali/src/pages/home/home_page.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -24,6 +28,9 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+
+  final _localStorageService = locator<LocalStorageService>();
+
   final FocusNode myFocusNodePassword = FocusNode();
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
@@ -264,10 +271,18 @@ class _SignUpFormState extends State<SignUpForm> {
       // alerta con mensaje de error
     } else {
       // Save user to shared preferences
-      print('se guarda currentUser en shared preferences ' +
-          currentUser.toJson().toString());
+      await widget.userBloc.signInAnonymously().then((FirebaseUser user) {
+        print('datos del usuario anonimo ' + user.toString());
 
-      Navigator.pushNamed(context, HomePage.routeName);
+        FirebaseMessaging().getToken().then((token) {
+          widget.userBloc.updateUserToken(token, user.uid);
+
+          _localStorageService.jwtToken = currentUser.jwt;
+          _localStorageService.email = currentUser.email;
+          _localStorageService.fullname = currentUser.full_name;
+          _localStorageService.photoURL = currentUser.photoURL;
+        });
+      });
     }
   }
 

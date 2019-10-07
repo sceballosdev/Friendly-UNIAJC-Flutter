@@ -10,6 +10,8 @@ import 'package:location/location.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/maps/widgets/store_carousel.dart';
 import 'package:workshop_gdg_cali/src/pages/maps/widgets/store_map.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 
 class MapsPage extends StatefulWidget {
   static const String routeName = "/maps";
@@ -30,6 +32,7 @@ class _MapsPageState extends State<MapsPage> {
   geolocation.Position position;
   int selectedIndex = 0;
   UserBloc userBloc;
+  final _localStorageService = locator<LocalStorageService>();
 
   @override
   void initState() {
@@ -150,10 +153,10 @@ class _MapsPageState extends State<MapsPage> {
               .collection('userLocations')
               .document(user.uid)
               .setData({
-            'address': 'Ubicación actual de ' + user.displayName,
+            'address': 'Ubicación actual de ' + _localStorageService.fullname,
             'location': GeoPoint(position.latitude, position.longitude),
-            'name': user.displayName,
-            'photoUrl': user.photoUrl,
+            'name': _localStorageService.fullname,
+            'photoUrl': _localStorageService.photoURL,
             'placeId': 'ChIJkSr7GyqnMI4ReLXQnyDN3hM',
           });
         });

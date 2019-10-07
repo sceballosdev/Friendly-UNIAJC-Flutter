@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:workshop_gdg_cali/src/pages/utils/api_key.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 
 class StoreListTile extends StatefulWidget {
   const StoreListTile({
@@ -27,6 +29,7 @@ final _placesApiClient = GoogleMapsPlaces(apiKey: googleMapsApiKey);
 class _StoreListTileState extends State<StoreListTile> {
   String _placePhotoUrl = '';
   bool _disposed = false;
+  final _localStorageService = locator<LocalStorageService>();
 
   @override
   void initState() {
@@ -61,10 +64,10 @@ class _StoreListTileState extends State<StoreListTile> {
       title: Text(widget.document['name']),
       subtitle: Text(widget.document['address']),
       leading: Container(
-        child: _placePhotoUrl.isNotEmpty
+        child: widget.document['photoUrl'].isNotEmpty
             // ? CircleAvatar(backgroundImage: NetworkImage(_placePhotoUrl))
             ? ClipRRect(
-                child: Image.network(_placePhotoUrl, fit: BoxFit.cover),
+                child: Image.network(widget.document['photoUrl'], fit: BoxFit.cover),
                 borderRadius: const BorderRadius.all(Radius.circular(2)),
               )
             : CircleAvatar(

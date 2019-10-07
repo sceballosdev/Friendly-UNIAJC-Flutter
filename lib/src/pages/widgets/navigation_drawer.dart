@@ -2,15 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:workshop_gdg_cali/src/pages/login/bloc/bloc_user.dart';
 import 'package:workshop_gdg_cali/src/pages/maps/maps_page.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 import 'package:workshop_gdg_cali/src/pages/widgets/header_drawer.dart';
 
 class NavigationDrawer extends StatefulWidget {
+
+  const NavigationDrawer({
+    Key key,
+    @required this.email,
+    @required this.fullname,
+    @required this.photoURL,
+  }) : super(key: key);
+
+  final String email;
+  final String fullname;
+  final String photoURL;
+
   @override
   _NavigationDrawerState createState() => _NavigationDrawerState();
 }
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
   UserBloc userBloc;
+  final _localStorageService = locator<LocalStorageService>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +34,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          HeaderDrawer(),
+          HeaderDrawer(
+              email: _localStorageService.email,
+              fullname: _localStorageService.fullname,
+              photoURL: _localStorageService.photoURL
+          ),
           ListTile(
               title: Text("Inicio"),
               leading: Icon(Icons.home),

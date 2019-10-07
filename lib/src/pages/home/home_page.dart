@@ -8,6 +8,8 @@ import 'package:workshop_gdg_cali/src/pages/home/widgets/chart_bar.dart';
 import 'package:workshop_gdg_cali/src/pages/home/widgets/chart_line.dart';
 import 'package:workshop_gdg_cali/src/pages/home/widgets/chart_pie.dart';
 import 'package:workshop_gdg_cali/src/pages/styles/colors.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/local_storage_service.dart';
+import 'package:workshop_gdg_cali/src/pages/utils/locator.dart';
 import 'package:workshop_gdg_cali/src/pages/widgets/navigation_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +23,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  final _localStorageService = locator<LocalStorageService>();
+
   final List<Tab> myTabs = <Tab>[
     Tab(icon: Icon(FontAwesomeIcons.solidChartBar)),
     Tab(icon: Icon(FontAwesomeIcons.chartPie)),
@@ -192,7 +196,10 @@ class _HomePageState extends State<HomePage>
           ),
           title: Text('Friendly UNIAJC'),
         ),
-        drawer: NavigationDrawer(),
+        drawer: NavigationDrawer(
+            email: _localStorageService.email,
+            fullname: _localStorageService.fullname,
+            photoURL: _localStorageService.photoURL),
         body: TabBarView(
           controller: _tabController,
           children: [

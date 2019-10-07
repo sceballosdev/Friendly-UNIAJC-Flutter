@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
 
 class HeaderDrawer extends StatelessWidget {
+  const HeaderDrawer({
+    Key key,
+    @required this.email,
+    @required this.fullname,
+    @required this.photoURL,
+  }) : super(key: key);
+
+  final String email;
+  final String fullname;
+  final String photoURL;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return UserAccountsDrawerHeader(
-      accountEmail: Text("sceballosdev@gmail.com"),
-      accountName: Text("Steven Ceballos"),
+      accountEmail: Text(email),
+      accountName: Text(fullname),
       currentAccountPicture: GestureDetector(
-        child: CircleAvatar(
-          backgroundImage: AssetImage('assets/images/profile.jpg'),
-        ),
+        child: photoURL.isNotEmpty
+            ? CircleAvatar(
+                backgroundImage: NetworkImage(photoURL),
+              )
+            : CircleAvatar(
+                backgroundImage: AssetImage('assets/images/profile.png'),
+              ),
         onTap: () => print("Evento por si se clickea la foto"),
       ),
       decoration: BoxDecoration(
